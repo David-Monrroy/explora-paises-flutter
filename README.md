@@ -28,18 +28,26 @@ servicio HTTP y las fuentes de respaldo permanecen aislados en la capa de datos.
 
 ## Módulo de gráficas
 
-La pestaña **Gráficas** incluye 252 visualizaciones construidas con información
-de REST Countries:
+En la pestaña **Gráficas** primero se eligen exactamente siete países. El catálogo
+permanece oculto hasta completar la selección. Después aparecen 252
+visualizaciones construidas exclusivamente con esos siete países:
 
 - 63 con `fl_chart`.
 - 63 con `syncfusion_flutter_charts`.
 - 63 con `charts_flutter_maintained`.
 - 63 con `graphic`.
 
-Cada librería contiene 31 gráficas básicas y 32 avanzadas. El catálogo, las
-transformaciones de datos y los cuatro renderizadores están separados dentro de
-`lib/features/charts/`. Las visualizaciones se diferencian por tipo, métrica,
-agrupación, alcance, orden, cantidad de datos e interacción.
+Cada librería contiene 31 gráficas básicas y 32 avanzadas. Las 252 combinaciones
+de métrica, cálculo y geometría son únicas. Los detalles incluyen título,
+explicación, ejes, unidades, leyenda y los valores de cada país o grupo.
+
+Las métricas son población, superficie, densidad, idiomas, países limítrofes,
+zonas horarias y monedas. Los gráficos de línea y área muestran rankings o
+acumulados, no una evolución histórica. Los datos se obtienen de REST Countries;
+si falla la conexión se usa un pequeño conjunto de respaldo para la demostración.
+
+El catálogo, las transformaciones de datos y los cuatro renderizadores están
+separados dentro de `lib/features/charts/`.
 
 `charts_flutter_maintained` se conserva en `third_party/` con tres ajustes
 mínimos de compatibilidad para Dart 3.13. El código sigue perteneciendo a sus

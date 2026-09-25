@@ -1,3 +1,4 @@
+import 'package:explora_paises/data/models/country.dart';
 import 'package:explora_paises/data/services/rest_countries_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
@@ -15,7 +16,8 @@ void main() {
           '"subregion":"South America","population":52215503,'
           '"flags":{},"cca3":"COL","languages":{"spa":"Spanish"},'
           '"currencies":{"COP":{"name":"Colombian peso"}},'
-          '"area":1141748,"maps":{}}]',
+          '"area":1141748,"borders":["BRA","PER"],'
+          '"timezones":["UTC-05:00"],"maps":{}}]',
           200,
         );
       }),
@@ -26,5 +28,25 @@ void main() {
     expect(requests, 1);
     expect(countries.single.name, 'Colombia');
     expect(countries.single.region, 'Am\u00e9rica');
+    expect(countries.single.borders, ['BRA', 'PER']);
+    expect(countries.single.timezones, ['UTC-05:00']);
+  });
+
+  test('interpreta monedas, fronteras y zonas horarias de v5', () {
+    final country = Country.fromV5Json({
+      'names': {'common': 'Colombia'},
+      'codes': {'alpha_3': 'COL'},
+      'population': 50000000,
+      'area': {'kilometers': 1141748},
+      'currencies': [
+        {'code': 'COP', 'name': 'Peso colombiano', 'symbol': r'$'},
+      ],
+      'borders': ['BRA', 'PER'],
+      'timezones': ['UTC-05:00'],
+    });
+
+    expect(country.currencies.single, startsWith('Peso colombiano'));
+    expect(country.borders, ['BRA', 'PER']);
+    expect(country.timezones, ['UTC-05:00']);
   });
 }

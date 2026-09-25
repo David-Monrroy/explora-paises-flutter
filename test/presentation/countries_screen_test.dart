@@ -47,12 +47,83 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byKey(const Key('charts-tab')), findsOneWidget);
+    expect(find.text('Elige 7 países'), findsOneWidget);
+    expect(find.byKey(const Key('chart-flChart-population-1')), findsNothing);
+
+    for (final country in [
+      'Colombia',
+      'Japon',
+      'Canada',
+      'Brasil',
+      'Francia',
+      'Alemania',
+      'India',
+    ]) {
+      await tester.enterText(
+        find.byKey(const Key('country-chart-search')),
+        country,
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(country).last);
+      await tester.pumpAndSettle();
+    }
+
+    expect(find.text('Comparación lista'), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text('252 gráficas visibles'),
+      180,
+      scrollable: find
+          .descendant(
+            of: find.byKey(const Key('charts-tab')),
+            matching: find.byType(Scrollable),
+          )
+          .first,
+    );
     expect(find.text('252 gráficas visibles'), findsOneWidget);
 
-    await tester.tap(find.textContaining('1. ').first);
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('chart-flChart-population-1')),
+      150,
+      scrollable: find
+          .descendant(
+            of: find.byKey(const Key('charts-tab')),
+            matching: find.byType(Scrollable),
+          )
+          .first,
+    );
+    await Scrollable.ensureVisible(
+      tester.element(find.byKey(const Key('chart-flChart-population-1'))),
+      alignment: 0.3,
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('chart-flChart-population-1')));
     await tester.pumpAndSettle();
 
     expect(find.text('Gráfica 1'), findsOneWidget);
+    await tester.scrollUntilVisible(find.text('Leyenda y valores'), 250);
+    expect(find.text('Leyenda y valores'), findsOneWidget);
+
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('selected-COL')),
+      -250,
+      scrollable: find
+          .descendant(
+            of: find.byKey(const Key('charts-tab')),
+            matching: find.byType(Scrollable),
+          )
+          .first,
+    );
+    await Scrollable.ensureVisible(
+      tester.element(find.byKey(const Key('selected-COL'))),
+      alignment: 0.25,
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.byTooltip('Quitar Colombia'));
+    await tester.pumpAndSettle();
+    expect(find.text('Elige 7 países'), findsOneWidget);
+    expect(find.byKey(const Key('chart-flChart-population-1')), findsNothing);
   });
 }
 
@@ -72,6 +143,62 @@ class _FakeRepository implements CountryRepository {
         languages: ['Spanish'],
         currencies: ['Colombian peso'],
         area: 1141748,
+        mapsUrl: '',
+      ),
+      Country(
+        name: 'Brasil',
+        capital: 'Brasilia',
+        region: 'Americas',
+        subregion: 'South America',
+        population: 210000000,
+        flagPng: '',
+        flagAlt: '',
+        code: 'BRA',
+        languages: ['Portuguese'],
+        currencies: ['Real'],
+        area: 8515767,
+        mapsUrl: '',
+      ),
+      Country(
+        name: 'Francia',
+        capital: 'Paris',
+        region: 'Europe',
+        subregion: 'Western Europe',
+        population: 68000000,
+        flagPng: '',
+        flagAlt: '',
+        code: 'FRA',
+        languages: ['French'],
+        currencies: ['Euro'],
+        area: 551695,
+        mapsUrl: '',
+      ),
+      Country(
+        name: 'Alemania',
+        capital: 'Berlin',
+        region: 'Europe',
+        subregion: 'Western Europe',
+        population: 83000000,
+        flagPng: '',
+        flagAlt: '',
+        code: 'DEU',
+        languages: ['German'],
+        currencies: ['Euro'],
+        area: 357588,
+        mapsUrl: '',
+      ),
+      Country(
+        name: 'India',
+        capital: 'New Delhi',
+        region: 'Asia',
+        subregion: 'Southern Asia',
+        population: 1420000000,
+        flagPng: '',
+        flagAlt: '',
+        code: 'IND',
+        languages: ['Hindi', 'English'],
+        currencies: ['Rupee'],
+        area: 3287263,
         mapsUrl: '',
       ),
       Country(

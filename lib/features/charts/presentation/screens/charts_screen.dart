@@ -16,22 +16,56 @@ class ChartsScreen extends StatefulWidget {
 }
 
 class _ChartsScreenState extends State<ChartsScreen> {
+  final _searchController = TextEditingController();
+  final _selectedCodes = <String>[];
   ChartLibrary? _library;
   ChartLevel? _level;
+  String _query = '';
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  List<Country> get _selectedCountries {
+    final byCode = {
+      for (final country in widget.countries) country.code: country,
+    };
+    return [
+      for (final code in _selectedCodes)
+        if (byCode[code] != null) byCode[code]!,
+    ];
+  }
 
   List<ChartDefinition> get _filtered => ChartCatalog.all
-      .where((chart) {
-        return (_library == null || chart.library == _library) &&
-            (_level == null || chart.level == _level);
-      })
+      .where(
+        (chart) =>
+            (_library == null || chart.library == _library) &&
+            (_level == null || chart.level == _level),
+      )
       .toList(growable: false);
+
+  void _toggleCountry(Country country) {
+    setState(() {
+      if (_selectedCodes.contains(country.code)) {
+        _selectedCodes.remove(country.code);
+      } else if (_selectedCodes.length < 7) {
+        _selectedCodes.add(country.code);
+      }
+      if (_selectedCodes.length == 7) {
+        _query = '';
+        _searchController.clear();
+      }
+    });
+  }
 
   void _open(ChartDefinition definition) {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => ChartDetailScreen(
           definition: definition,
-          countries: widget.countries,
+          countries: _selectedCountries,
         ),
       ),
     );
@@ -39,178 +73,203 @@ class _ChartsScreenState extends State<ChartsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final charts = _filtered;
+    final selected = _selectedCountries;
+    final ready = selected.length == 7;
+    final available =
+        widget.countries
+            .where(
+              (country) =>
+                  !_selectedCodes.contains(country.code) &&
+                  country.matches(_query),
+            )
+            .toList()
+          ..sort((a, b) => a.name.compareTo(b.name));
+    final charts = ready ? _filtered : const <ChartDefinition>[];
+
     return CustomScrollView(
       key: const Key('charts-tab'),
       slivers: [
         SliverToBoxAdapter(
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(18, 10, 18, 6),
-            child: _SummaryCard(visibleCount: charts.length),
+            padding: const EdgeInsets.fromLTRB(18, 12, 18, 8),
+            child: _SelectionHeader(count: selected.length, ready: ready),
           ),
         ),
-        SliverToBoxAdapter(
-          child: SizedBox(
-            height: 48,
-            child: ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 18),
-              scrollDirection: Axis.horizontal,
-              children: [
-                ChoiceChip(
-                  label: const Text('Todas'),
-                  selected: _library == null,
-                  onSelected: (_) => setState(() => _library = null),
+        if (selected.isNotEmpty)
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(18, 0, 18, 12),
+              child: Wrap(
+                spacing: 7,
+                runSpacing: 6,
+                children: [
+                  for (final country in selected)
+                    InputChip(
+                      key: Key('selected-${country.code}'),
+                      label: Text(country.name),
+                      onDeleted: () => _toggleCountry(country),
+                      deleteButtonTooltipMessage: 'Quitar ${country.name}',
+                    ),
+                ],
+              ),
+            ),
+          ),
+        if (!ready) ...[
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(18, 4, 18, 10),
+              child: TextField(
+                key: const Key('country-chart-search'),
+                controller: _searchController,
+                onChanged: (value) => setState(() => _query = value),
+                decoration: InputDecoration(
+                  prefixIcon: const Icon(Icons.search_rounded),
+                  hintText: 'Busca un país para comparar',
+                  filled: true,
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                    borderSide: BorderSide.none,
+                  ),
                 ),
-                const SizedBox(width: 8),
-                for (final library in ChartLibrary.values) ...[
+              ),
+            ),
+          ),
+          if (widget.countries.length < 7)
+            const SliverToBoxAdapter(
+              child: Padding(
+                padding: EdgeInsets.all(18),
+                child: Text(
+                  'No hay siete países disponibles. Actualiza los datos para continuar.',
+                ),
+              ),
+            )
+          else
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(18, 0, 18, 24),
+              sliver: SliverList.separated(
+                itemCount: available.length,
+                separatorBuilder: (_, _) => const SizedBox(height: 6),
+                itemBuilder: (context, index) {
+                  final country = available[index];
+                  return Card(
+                    child: ListTile(
+                      key: Key('select-country-${country.code}'),
+                      leading: const Icon(
+                        Icons.public_rounded,
+                        color: AppConstants.primaryColor,
+                      ),
+                      title: Text(country.name),
+                      subtitle: Text('${country.region} · ${country.code}'),
+                      trailing: const Icon(Icons.add_circle_outline_rounded),
+                      onTap: () => _toggleCountry(country),
+                    ),
+                  );
+                },
+              ),
+            ),
+        ] else ...[
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(18, 4, 18, 10),
+              child: Text(
+                'Todas las gráficas usan exclusivamente estos siete países. '
+                'Quita uno para cambiar la selección.',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: SizedBox(
+              height: 48,
+              child: ListView(
+                padding: const EdgeInsets.symmetric(horizontal: 18),
+                scrollDirection: Axis.horizontal,
+                children: [
                   ChoiceChip(
-                    label: Text(library.label),
-                    selected: _library == library,
-                    onSelected: (_) => setState(() => _library = library),
+                    label: const Text('Todas'),
+                    selected: _library == null,
+                    onSelected: (_) => setState(() => _library = null),
                   ),
                   const SizedBox(width: 8),
-                ],
-              ],
-            ),
-          ),
-        ),
-        SliverToBoxAdapter(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(18, 4, 18, 10),
-            child: SegmentedButton<ChartLevel?>(
-              segments: const [
-                ButtonSegment(value: null, label: Text('Todas')),
-                ButtonSegment(value: ChartLevel.basic, label: Text('Básicas')),
-                ButtonSegment(
-                  value: ChartLevel.advanced,
-                  label: Text('Avanzadas'),
-                ),
-              ],
-              selected: {_level},
-              onSelectionChanged: (value) {
-                setState(() => _level = value.first);
-              },
-              showSelectedIcon: false,
-            ),
-          ),
-        ),
-        SliverPadding(
-          padding: const EdgeInsets.fromLTRB(18, 0, 18, 24),
-          sliver: SliverList.separated(
-            itemCount: charts.length,
-            separatorBuilder: (_, _) => const SizedBox(height: 10),
-            itemBuilder: (context, index) {
-              final chart = charts[index];
-              return _ChartCard(chart: chart, onTap: () => _open(chart));
-            },
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _SummaryCard extends StatelessWidget {
-  const _SummaryCard({required this.visibleCount});
-
-  final int visibleCount;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      color: AppConstants.darkGreen,
-      child: Padding(
-        padding: const EdgeInsets.all(18),
-        child: Row(
-          children: [
-            const CircleAvatar(
-              backgroundColor: Color(0xFF2A5B53),
-              child: Icon(Icons.insights_rounded, color: Colors.white),
-            ),
-            const SizedBox(width: 14),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '$visibleCount gráficas visibles',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w900,
-                      fontSize: 17,
+                  for (final library in ChartLibrary.values) ...[
+                    ChoiceChip(
+                      label: Text(library.label),
+                      selected: _library == library,
+                      onSelected: (_) => setState(() => _library = library),
                     ),
-                  ),
-                  const SizedBox(height: 3),
-                  const Text(
-                    '252 análisis únicos · 4 librerías',
-                    style: TextStyle(color: Colors.white70),
-                  ),
+                    const SizedBox(width: 8),
+                  ],
                 ],
               ),
             ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _ChartCard extends StatelessWidget {
-  const _ChartCard({required this.chart, required this.onTap});
-
-  final ChartDefinition chart;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: InkWell(
-        borderRadius: BorderRadius.circular(16),
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.all(14),
-          child: Row(
-            children: [
-              Container(
-                width: 48,
-                height: 48,
-                decoration: BoxDecoration(
-                  color: _color.withValues(alpha: .12),
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                child: Icon(_icon, color: _color),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(18, 4, 18, 10),
+              child: SegmentedButton<ChartLevel?>(
+                segments: const [
+                  ButtonSegment(value: null, label: Text('Todas')),
+                  ButtonSegment(
+                    value: ChartLevel.basic,
+                    label: Text('Básicas'),
+                  ),
+                  ButtonSegment(
+                    value: ChartLevel.advanced,
+                    label: Text('Avanzadas'),
+                  ),
+                ],
+                selected: {_level},
+                onSelectionChanged: (value) =>
+                    setState(() => _level = value.first),
+                showSelectedIcon: false,
               ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(18, 0, 18, 8),
+              child: Text(
+                '${charts.length} gráficas visibles',
+                style: const TextStyle(fontWeight: FontWeight.w800),
+              ),
+            ),
+          ),
+          SliverPadding(
+            padding: const EdgeInsets.fromLTRB(18, 0, 18, 24),
+            sliver: SliverList.separated(
+              itemCount: charts.length,
+              separatorBuilder: (_, _) => const SizedBox(height: 8),
+              itemBuilder: (context, index) {
+                final chart = charts[index];
+                return Card(
+                  child: ListTile(
+                    key: Key('chart-${chart.id}'),
+                    leading: Icon(
+                      _iconFor(chart.kind),
+                      color: AppConstants.primaryColor,
+                    ),
+                    title: Text(
                       '${chart.number}. ${chart.title}',
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(fontWeight: FontWeight.w800),
                     ),
-                    const SizedBox(height: 4),
-                    Text(
+                    subtitle: Text(
                       '${chart.library.label} · ${chart.level.label} · ${chart.kind.label}',
-                      style: const TextStyle(
-                        fontSize: 12,
-                        color: Colors.black54,
-                      ),
                     ),
-                  ],
-                ),
-              ),
-              const Icon(Icons.chevron_right_rounded),
-            ],
+                    trailing: const Icon(Icons.chevron_right_rounded),
+                    onTap: () => _open(chart),
+                  ),
+                );
+              },
+            ),
           ),
-        ),
-      ),
+        ],
+      ],
     );
   }
 
-  IconData get _icon => switch (chart.kind) {
+  IconData _iconFor(ChartKind kind) => switch (kind) {
     ChartKind.bar => Icons.bar_chart_rounded,
     ChartKind.line => Icons.show_chart_rounded,
     ChartKind.area => Icons.area_chart_rounded,
@@ -218,11 +277,62 @@ class _ChartCard extends StatelessWidget {
     ChartKind.donut => Icons.donut_large_rounded,
     ChartKind.scatter => Icons.scatter_plot_rounded,
   };
+}
 
-  Color get _color => switch (chart.library) {
-    ChartLibrary.flChart => const Color(0xFF0B7D6B),
-    ChartLibrary.syncfusion => const Color(0xFF4361EE),
-    ChartLibrary.maintained => const Color(0xFFF59E0B),
-    ChartLibrary.graphic => const Color(0xFF9B5DE5),
-  };
+class _SelectionHeader extends StatelessWidget {
+  const _SelectionHeader({required this.count, required this.ready});
+
+  final int count;
+  final bool ready;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      color: AppConstants.darkGreen,
+      child: Padding(
+        padding: const EdgeInsets.all(18),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                const Icon(Icons.insights_rounded, color: Colors.white),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    ready ? 'Comparación lista' : 'Elige 7 países',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 19,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                ),
+                Text(
+                  '$count/7',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Text(
+              ready
+                  ? 'Ya puedes explorar 252 comparaciones basadas en tu selección.'
+                  : 'Las gráficas aparecerán cuando completes los siete países.',
+              style: const TextStyle(color: Colors.white70),
+            ),
+            const SizedBox(height: 12),
+            LinearProgressIndicator(
+              value: count / 7,
+              backgroundColor: Colors.white24,
+              color: const Color(0xFF91E5C8),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }

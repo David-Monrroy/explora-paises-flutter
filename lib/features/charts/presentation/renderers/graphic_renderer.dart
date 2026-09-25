@@ -3,6 +3,7 @@ import 'package:graphic/graphic.dart';
 
 import '../../domain/chart_definition.dart';
 import '../../domain/chart_point.dart';
+import '../chart_palette.dart';
 
 class GraphicRenderer extends StatelessWidget {
   const GraphicRenderer({
@@ -19,7 +20,7 @@ class GraphicRenderer extends StatelessWidget {
     final data = [
       for (final point in points)
         {
-          'label': point.label,
+          'label': point.axisLabel,
           'value': point.value,
           'secondary': point.secondaryValue,
         },
@@ -50,7 +51,7 @@ class GraphicRenderer extends StatelessWidget {
                 position: Varset('percent') / Varset('label'),
                 color: ColorEncode(
                   variable: 'label',
-                  values: Defaults.colors10,
+                  values: ChartPalette.colors,
                 ),
                 modifiers: [StackModifier()],
               ),
@@ -60,7 +61,7 @@ class GraphicRenderer extends StatelessWidget {
                 ChartKind.bar => IntervalMark(
                   color: ColorEncode(
                     variable: 'label',
-                    values: Defaults.colors10,
+                    values: ChartPalette.colors,
                   ),
                 ),
                 ChartKind.area => AreaMark(
@@ -71,7 +72,7 @@ class GraphicRenderer extends StatelessWidget {
                   position: Varset('secondary') * Varset('value'),
                   color: ColorEncode(
                     variable: 'label',
-                    values: Defaults.colors10,
+                    values: ChartPalette.colors,
                   ),
                   size: SizeEncode(value: advanced ? 10 : 7),
                 ),

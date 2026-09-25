@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../../domain/chart_definition.dart';
 import '../../domain/chart_point.dart';
+import '../chart_palette.dart';
 
 class MaintainedRenderer extends StatelessWidget {
   const MaintainedRenderer({
@@ -26,6 +27,7 @@ class MaintainedRenderer extends StatelessWidget {
           id: definition.id,
           domainFn: (point, _) => point.label,
           measureFn: (point, _) => point.value,
+          colorFn: (_, index) => _color(index ?? 0),
           data: points,
         ),
       ];
@@ -47,6 +49,7 @@ class MaintainedRenderer extends StatelessWidget {
           domainFn: (point, _) => point.secondaryValue,
           measureFn: (point, _) => point.value,
           radiusPxFn: (point, _) => advanced ? 7 : 5,
+          colorFn: (_, index) => _color(index ?? 0),
           data: points,
         ),
       ];
@@ -61,8 +64,9 @@ class MaintainedRenderer extends StatelessWidget {
       final series = [
         charts.Series<ChartPoint, String>(
           id: definition.id,
-          domainFn: (point, _) => point.label,
+          domainFn: (point, _) => point.axisLabel,
           measureFn: (point, _) => point.value,
+          colorFn: (_, index) => _color(index ?? 0),
           data: points,
         ),
       ];
@@ -95,8 +99,16 @@ class MaintainedRenderer extends StatelessWidget {
   List<charts.ChartBehavior<T>> _behaviors<T>(bool advanced) {
     if (!advanced) return <charts.ChartBehavior<T>>[];
     return <charts.ChartBehavior<T>>[
-      charts.SeriesLegend<T>(position: charts.BehaviorPosition.bottom),
       charts.SelectNearest<T>(eventTrigger: charts.SelectionTrigger.tapAndDrag),
     ];
+  }
+
+  charts.Color _color(int index) {
+    final color = ChartPalette.at(index);
+    return charts.Color(
+      r: (color.r * 255).round(),
+      g: (color.g * 255).round(),
+      b: (color.b * 255).round(),
+    );
   }
 }

@@ -12,6 +12,8 @@ class Country {
     required this.currencies,
     required this.area,
     required this.mapsUrl,
+    this.borders = const [],
+    this.timezones = const [],
   });
 
   final String name;
@@ -26,6 +28,8 @@ class Country {
   final List<String> currencies;
   final double area;
   final String mapsUrl;
+  final List<String> borders;
+  final List<String> timezones;
 
   factory Country.fromJson(Map<String, dynamic> json) {
     final translations = _readMap(json['translations']);
@@ -56,6 +60,8 @@ class Country {
       currencies: _readCurrencies(json['currencies']),
       area: _readDouble(json['area']),
       mapsUrl: maps['googleMaps']?.toString() ?? '',
+      borders: _readList(json['borders']).map((item) => '$item').toList(),
+      timezones: _readList(json['timezones']).map((item) => '$item').toList(),
     );
   }
 
@@ -89,6 +95,8 @@ class Country {
       currencies: _readV5Currencies(json['currencies']),
       area: _readDouble(area['kilometers']),
       mapsUrl: links['google_maps']?.toString() ?? '',
+      borders: _readList(json['borders']).map((item) => '$item').toList(),
+      timezones: _readList(json['timezones']).map((item) => '$item').toList(),
     );
   }
 
@@ -140,6 +148,20 @@ class Country {
   }
 
   static List<String> _readV5Currencies(Object? value) {
+    if (value is List) {
+      return value
+          .map((item) {
+            final currency = _readMap(item);
+            final name =
+                currency['name']?.toString() ??
+                currency['code']?.toString() ??
+                '';
+            final symbol = currency['symbol']?.toString();
+            return symbol == null || symbol.isEmpty ? name : '$name ($symbol)';
+          })
+          .where((item) => item.isNotEmpty)
+          .toList();
+    }
     final currencies = _readMap(value);
     return currencies.entries.map((entry) {
       final currency = _readMap(entry.value);

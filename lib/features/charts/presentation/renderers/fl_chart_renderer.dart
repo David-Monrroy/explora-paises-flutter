@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../domain/chart_definition.dart';
 import '../../domain/chart_point.dart';
+import '../chart_palette.dart';
 
 class FlChartRenderer extends StatelessWidget {
   const FlChartRenderer({
@@ -31,10 +32,7 @@ class FlChartRenderer extends StatelessWidget {
     barTouchData: BarTouchData(
       enabled: definition.level == ChartLevel.advanced,
     ),
-    titlesData: const FlTitlesData(
-      topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-      rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-    ),
+    titlesData: _titles(),
     borderData: FlBorderData(show: false),
     barGroups: [
       for (var i = 0; i < points.length; i++)
@@ -43,7 +41,7 @@ class FlChartRenderer extends StatelessWidget {
           barRods: [
             BarChartRodData(
               toY: points[i].value,
-              color: _colors[i % _colors.length],
+              color: ChartPalette.at(i),
               width: 18,
               borderRadius: const BorderRadius.vertical(
                 top: Radius.circular(6),
@@ -56,10 +54,7 @@ class FlChartRenderer extends StatelessWidget {
 
   LineChartData _lineData(bool area) => LineChartData(
     gridData: const FlGridData(show: true),
-    titlesData: const FlTitlesData(
-      topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-      rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-    ),
+    titlesData: _titles(),
     borderData: FlBorderData(show: false),
     lineTouchData: LineTouchData(
       enabled: definition.level == ChartLevel.advanced,
@@ -89,9 +84,9 @@ class FlChartRenderer extends StatelessWidget {
       for (var i = 0; i < points.length; i++)
         PieChartSectionData(
           value: points[i].value,
-          title: _short(points[i].label),
+          title: points[i].countryCode ?? _short(points[i].label),
           radius: donut ? 62 : 92,
-          color: _colors[i % _colors.length],
+          color: ChartPalette.at(i),
           titleStyle: const TextStyle(
             color: Colors.white,
             fontSize: 10,
@@ -105,9 +100,29 @@ class FlChartRenderer extends StatelessWidget {
     scatterTouchData: ScatterTouchData(
       enabled: definition.level == ChartLevel.advanced,
     ),
-    titlesData: const FlTitlesData(
+    titlesData: FlTitlesData(
       topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
       rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+      bottomTitles: AxisTitles(
+        sideTitles: SideTitles(
+          showTitles: true,
+          reservedSize: 30,
+          getTitlesWidget: (value, meta) => SideTitleWidget(
+            meta: meta,
+            child: Text(
+              _shortValue(value),
+              style: const TextStyle(fontSize: 10),
+            ),
+          ),
+        ),
+      ),
+      leftTitles: AxisTitles(
+        sideTitles: SideTitles(
+          showTitles: true,
+          reservedSize: 48,
+          getTitlesWidget: _verticalTitle,
+        ),
+      ),
     ),
     borderData: FlBorderData(show: false),
     scatterSpots: [
@@ -117,7 +132,7 @@ class FlChartRenderer extends StatelessWidget {
           points[i].value,
           dotPainter: FlDotCirclePainter(
             radius: definition.level == ChartLevel.advanced ? 8 : 6,
-            color: _colors[i % _colors.length],
+            color: ChartPalette.at(i),
           ),
         ),
     ],
@@ -126,15 +141,50 @@ class FlChartRenderer extends StatelessWidget {
   static String _short(String value) =>
       value.length <= 8 ? value : '${value.substring(0, 7)}…';
 
-  static const _colors = [
-    Color(0xFF0B7D6B),
-    Color(0xFF38A3A5),
-    Color(0xFFFFB703),
-    Color(0xFFEF6F6C),
-    Color(0xFF6C63FF),
-    Color(0xFF2D6A4F),
-    Color(0xFFF4A261),
-    Color(0xFF577590),
-    Color(0xFF9B5DE5),
-  ];
+  FlTitlesData _titles() => FlTitlesData(
+    topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+    rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+    leftTitles: AxisTitles(
+      sideTitles: SideTitles(
+        showTitles: true,
+        reservedSize: 48,
+        getTitlesWidget: _verticalTitle,
+      ),
+    ),
+    bottomTitles: AxisTitles(
+      sideTitles: SideTitles(
+        showTitles: true,
+        reservedSize: 30,
+        interval: 1,
+        getTitlesWidget: (value, meta) {
+          final index = value.round();
+          if (value != index || index < 0 || index >= points.length) {
+            return const SizedBox.shrink();
+          }
+          return SideTitleWidget(
+            meta: meta,
+            child: Text(
+              points[index].axisLabel,
+              style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w700),
+            ),
+          );
+        },
+      ),
+    ),
+  );
+
+  Widget _verticalTitle(double value, TitleMeta meta) => SideTitleWidget(
+    meta: meta,
+    child: Text(_shortValue(value), style: const TextStyle(fontSize: 10)),
+  );
+
+  static String _shortValue(double value) {
+    final absolute = value.abs();
+    if (absolute >= 1000000000) {
+      return '${(value / 1000000000).toStringAsFixed(1)}B';
+    }
+    if (absolute >= 1000000) return '${(value / 1000000).toStringAsFixed(1)}M';
+    if (absolute >= 1000) return '${(value / 1000).toStringAsFixed(1)}K';
+    return value.toStringAsFixed(absolute < 10 ? 1 : 0);
+  }
 }

@@ -18,7 +18,7 @@ abstract final class AppConstants {
   static const apiKey = String.fromEnvironment('REST_COUNTRIES_API_KEY');
   static const v5Fields =
       'names,codes,capitals,flag,region,subregion,population,languages,'
-      'currencies,area,links';
+      'currencies,area,links,borders,timezones';
 
   static const featuredCountryCodes = ['COL', 'JPN', 'CAN', 'BRA', 'FRA'];
 }
