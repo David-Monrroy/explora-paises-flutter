@@ -12,6 +12,8 @@ include: package:flutter_lints/flutter.yaml
 analyzer:
   exclude:
     - build/**
+    # Código externo conservado únicamente para compatibilidad con Dart 3.13.
+    - third_party/**
     - web/**
 
 linter:

@@ -1,0 +1,6 @@
+# Código externo: sus incompatibilidades reales se validan al compilar la app.
+analyzer:
+  exclude:
+    - lib/**
+    - test/**
+    - example/**

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../core/constants/app_constants.dart';
 import '../../data/models/country.dart';
 import '../../data/repositories/country_repository.dart';
+import '../../features/charts/presentation/screens/charts_screen.dart';
 import '../view_models/countries_view_model.dart';
 import '../widgets/common_widgets.dart';
 import '../widgets/country_cards.dart';
@@ -51,7 +52,12 @@ class _CountriesScreenState extends State<CountriesScreen> {
     return AnimatedBuilder(
       animation: _viewModel,
       builder: (context, _) {
-        const titles = [AppConstants.appName, 'Favoritos', 'Mi perfil'];
+        const titles = [
+          AppConstants.appName,
+          'Gráficas',
+          'Favoritos',
+          'Mi perfil',
+        ];
         return Scaffold(
           drawer: const AppDrawer(),
           appBar: AppBar(
@@ -89,6 +95,11 @@ class _CountriesScreenState extends State<CountriesScreen> {
               NavigationDestination(
                 icon: Icon(Icons.public_rounded),
                 label: 'Explorar',
+              ),
+              NavigationDestination(
+                icon: Icon(Icons.insights_outlined),
+                selectedIcon: Icon(Icons.insights_rounded),
+                label: 'Gráficas',
               ),
               NavigationDestination(
                 icon: Icon(Icons.star_border_rounded),
@@ -134,6 +145,7 @@ class _CountriesScreenState extends State<CountriesScreen> {
           onOpenCountry: _openCountry,
           onToggleFavorite: _viewModel.toggleFavorite,
         ),
+        ChartsScreen(countries: _viewModel.countries),
         _FavoritesTab(
           countries: _viewModel.favorites,
           onOpenCountry: _openCountry,

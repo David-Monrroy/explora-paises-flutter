@@ -49,3 +49,9 @@ app.*.map.json
 
 # Archivos temporales usados durante el análisis del mockup
 .codex_pdf_images/
+
+# Archivos de desarrollo de dependencias vendorizadas (no requeridos por la app)
+third_party/**/example/
+third_party/**/test/
+third_party/**/*.gwsq
+third_party/**/minimum_os.bzl

@@ -38,6 +38,22 @@ void main() {
     expect(find.byKey(const Key('favorites-tab')), findsOneWidget);
     expect(find.text('Colombia'), findsWidgets);
   });
+
+  testWidgets('abre el catálogo y renderiza una gráfica', (tester) async {
+    await tester.pumpWidget(ExploreCountriesApp(repository: _FakeRepository()));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Gráficas'));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('charts-tab')), findsOneWidget);
+    expect(find.text('252 gráficas visibles'), findsOneWidget);
+
+    await tester.tap(find.textContaining('1. ').first);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Gráfica 1'), findsOneWidget);
+  });
 }
 
 class _FakeRepository implements CountryRepository {

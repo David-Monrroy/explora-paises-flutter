@@ -1,0 +1,7 @@
+{
+  "dart.analysisExcludedFolders": [
+    "third_party",
+    "${workspaceFolder}/third_party"
+  ],
+  "dart.showTodos": false
+}
