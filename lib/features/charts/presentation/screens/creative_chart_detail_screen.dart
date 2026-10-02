@@ -5,7 +5,7 @@ import '../../../../core/utils/number_formatters.dart';
 import '../../domain/chart_definition.dart';
 import '../../domain/chart_point.dart';
 import '../chart_palette.dart';
-import '../renderers/fl_chart_renderer.dart';
+import '../renderers/chart_renderer.dart';
 
 class CreativeChartDetailScreen extends StatefulWidget {
   const CreativeChartDetailScreen({
@@ -27,7 +27,7 @@ class _CreativeChartDetailScreenState extends State<CreativeChartDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final spec = widget.definition.creative!;
+    final spec = widget.definition.exploration!;
     return Scaffold(
       appBar: AppBar(title: Text('Gráfica ${widget.definition.number}')),
       body: SingleChildScrollView(
@@ -39,7 +39,7 @@ class _CreativeChartDetailScreenState extends State<CreativeChartDetailScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
-                  'FL Chart · ${widget.definition.level.label} · '
+                  '${widget.definition.library.label} · ${widget.definition.level.label} · '
                   '${spec.componentCount} ${spec.componentCount == 1 ? 'visualización' : 'tipos fusionados en una figura'}',
                   style: const TextStyle(
                     color: AppConstants.primaryColor,
@@ -61,9 +61,9 @@ class _CreativeChartDetailScreenState extends State<CreativeChartDetailScreen> {
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  spec.fusion == null
+                  !spec.usesLayerColors
                       ? 'Los colores identifican países, salvo donde se indica otra escala. Toca un país para resaltarlo; todos siguen incluidos en los cálculos.'
-                      : 'Los países se identifican por sus códigos en la figura. Los colores distinguen tipos de gráfica en la leyenda. Toca un país para destacar sus barras o marcadores; los siete siguen incluidos.',
+                      : 'Los países se identifican por sus códigos en la figura. Los colores distinguen tipos de gráfica en la leyenda. Toca un país para destacar sus elementos; los siete siguen incluidos.',
                   style: const TextStyle(fontSize: 12, height: 1.4),
                 ),
                 const SizedBox(height: 10),
@@ -76,7 +76,7 @@ class _CreativeChartDetailScreenState extends State<CreativeChartDetailScreen> {
                         key: ValueKey(
                           'highlight-${widget.points[i].countryCode}',
                         ),
-                        avatar: spec.fusion != null
+                        avatar: spec.usesLayerColors
                             ? null
                             : CircleAvatar(
                                 backgroundColor: ChartPalette.at(i),
@@ -96,7 +96,7 @@ class _CreativeChartDetailScreenState extends State<CreativeChartDetailScreen> {
                   ],
                 ),
                 const SizedBox(height: 18),
-                FlChartRenderer(
+                ChartRenderer(
                   definition: widget.definition,
                   points: widget.points,
                   highlightedCode: _highlightedCode,
@@ -118,7 +118,7 @@ class _CreativeChartDetailScreenState extends State<CreativeChartDetailScreen> {
                       key: ValueKey(
                         'source-values-${widget.points[i].countryCode}',
                       ),
-                      leading: spec.fusion != null
+                      leading: spec.usesLayerColors
                           ? null
                           : CircleAvatar(
                               radius: 7,

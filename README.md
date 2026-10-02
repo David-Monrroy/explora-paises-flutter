@@ -55,7 +55,8 @@ La primera librería contiene 15 visualizaciones individuales, 16 combinaciones
 de dos, 16 de tres y 16 de cuatro. Las primeras 31 se clasifican como básicas y
 las 32 combinaciones de tres o cuatro como avanzadas. El conjunto de componentes
 de cada combinación es único, incluso si se ignora su orden, nombre y color.
-Las otras tres librerías conservan su catálogo hasta la siguiente etapa.
+Las otras librerías se renuevan por separado, con verificación de geometrías
+distintas antes de avanzar a la siguiente.
 
 Las formas incluyen radar, paletas, mancuernas, pendientes, coordenadas paralelas,
 burbujas, mapa de calor, waffle, curva de concentración, cascada, bala, barras
@@ -81,6 +82,39 @@ si no existe un total positivo, la vista proporcional muestra un mensaje.
 El catálogo de esta etapa está en `data/fl_creative_catalog.dart`, las definiciones
 en `domain/creative_chart.dart` y la presentación en `presentation/`. Los datos
 originales con sus unidades se pueden consultar al desplegar cada país.
+
+### Segunda etapa: Syncfusion completado
+
+Syncfusion contiene 63 propuestas: 15 individuales, 16 combinaciones de dos,
+16 de tres y 16 de cuatro. Conserva 31 básicas y 32 avanzadas. Incluye columnas
+de rango, bandas curvas, líneas y áreas escalonadas, splines, cajas y bigotes,
+Hilo, OHLC adaptado, velas de características, columnas apiladas de complemento,
+histograma, embudo, pirámide y barras radiales. Son tipos nativos distintos de
+los usados en FL Chart; los conjuntos de formas se comparan sin considerar
+nombre de librería, orden, colores o métricas para detectar duplicados.
+
+Las 48 combinaciones usan un único `SfCartesianChart` con varias series, un eje
+de países compartido y el índice 0–100. No son paneles ni múltiples gráficas
+independientes. Las transparencias y anchos distintos permiten identificar
+las capas, cuyos nombres y transformaciones aparecen en la leyenda.
+
+Los rangos comparan características normalizadas, no intervalos de confianza.
+Las cajas resumen los siete índices de cada país, no muestras de habitantes.
+Las geometrías Hilo/OHLC/velas se adaptan a comparaciones de características,
+sin inventar precios, aperturas, cierres ni series históricas. Los splines son
+guías entre categorías, no observaciones intermedias. Las columnas apiladas
+usan densidad y su complemento al máximo, sin sumar unidades incompatibles.
+El histograma cuenta países por intervalos de densidad; el embudo compara
+habitantes y la pirámide reparte superficie en modo área. Los arcos radiales
+miden superficie respecto al máximo del grupo, no respecto al total.
+
+La selección obligatoria de siete países no se modifica. El catálogo está en
+`data/syncfusion_creative_catalog.dart`, los cálculos en
+`data/syncfusion_chart_data.dart`, las especificaciones en
+`domain/syncfusion_chart_spec.dart` y el dibujo en
+`presentation/renderers/syncfusion_renderer.dart`. La pantalla de detalle es
+compartida; los datos originales y sus unidades se conservan. Maintained Charts
+y Graphic siguen sin renovar, pendientes de aprobación para sus etapas.
 
 `charts_flutter_maintained` se conserva en `third_party/` con tres ajustes
 mínimos de compatibilidad para Dart 3.13. El código sigue perteneciendo a sus

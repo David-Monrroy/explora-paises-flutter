@@ -1,74 +1,10 @@
 import '../domain/chart_definition.dart';
 import 'fl_creative_catalog.dart';
+import 'syncfusion_creative_catalog.dart';
 
 abstract final class ChartCatalog {
   // Cada receta cambia la pregunta, la geometría o el cálculo mostrado.
   static const recipes = <ChartRecipe>[
-    // Syncfusion.
-    ChartRecipe(
-      kind: ChartKind.bar,
-      analysis: ChartAnalysis.gapToMaximum,
-      question: 'distancia respecto al líder',
-      explanation:
-          'Cada barra indica cuánto le falta al país para alcanzar al líder.',
-    ),
-    ChartRecipe(
-      kind: ChartKind.line,
-      analysis: ChartAnalysis.cumulativePercent,
-      question: 'participación acumulada por ranking',
-      explanation: 'Suma porcentajes desde el mayor valor; el último punto alcanza 100 %.',
-    ),
-    ChartRecipe(
-      kind: ChartKind.area,
-      analysis: ChartAnalysis.remainingPercent,
-      question: 'participación pendiente por agregar',
-      explanation: 'Muestra qué porcentaje queda después de incorporar cada país del ranking.',
-    ),
-    ChartRecipe(
-      kind: ChartKind.pie,
-      analysis: ChartAnalysis.topGroup,
-      groupSize: 2,
-      question: 'dos líderes frente al resto',
-      explanation:
-          'Compara la suma de los dos países mayores con los otros cinco.',
-    ),
-    ChartRecipe(
-      kind: ChartKind.donut,
-      analysis: ChartAnalysis.bottomGroup,
-      groupSize: 2,
-      question: 'dos menores frente al resto',
-      explanation:
-          'Compara la suma de los dos países menores con los otros cinco.',
-    ),
-    ChartRecipe(
-      kind: ChartKind.scatter,
-      analysis: ChartAnalysis.scatter,
-      secondaryOffset: 3,
-      question: 'cruce con una tercera variable',
-      explanation:
-          'Sitúa los siete países según dos características distintas.',
-    ),
-    ChartRecipe(
-      kind: ChartKind.bar,
-      analysis: ChartAnalysis.share,
-      question: 'aporte porcentual por país',
-      explanation:
-          'Las siete barras muestran porcentajes que juntos suman 100 %.',
-    ),
-    ChartRecipe(
-      kind: ChartKind.line,
-      analysis: ChartAnalysis.gapToMaximum,
-      question: 'brecha descendente respecto al líder',
-      explanation: 'Recorre las distancias al líder en el orden del ranking.',
-    ),
-    ChartRecipe(
-      kind: ChartKind.scatter,
-      analysis: ChartAnalysis.scatter,
-      secondaryOffset: 4,
-      question: 'relación con una cuarta variable',
-      explanation: 'Permite observar si dos características de los países varían juntas.',
-    ),
-
     // Maintained Charts.
     ChartRecipe(
       kind: ChartKind.bar,
@@ -199,9 +135,12 @@ abstract final class ChartCatalog {
   static final List<ChartDefinition> all = _buildCatalog();
 
   static List<ChartDefinition> _buildCatalog() {
-    assert(recipes.length == 27);
-    final charts = <ChartDefinition>[...FlCreativeCatalog.all];
-    for (final library in ChartLibrary.values.skip(1)) {
+    assert(recipes.length == 18);
+    final charts = <ChartDefinition>[
+      ...FlCreativeCatalog.all,
+      ...SyncfusionCreativeCatalog.all,
+    ];
+    for (final library in ChartLibrary.values.skip(2)) {
       for (final metric in ChartMetric.values) {
         for (var recipeIndex = 0; recipeIndex < 9; recipeIndex++) {
           final local = metric.index * 9 + recipeIndex;
@@ -215,7 +154,7 @@ abstract final class ChartCatalog {
                   ? ChartLevel.basic
                   : ChartLevel.advanced,
               metric: metric,
-              recipe: recipes[(library.index - 1) * 9 + recipeIndex],
+              recipe: recipes[(library.index - 2) * 9 + recipeIndex],
             ),
           );
         }

@@ -14,7 +14,7 @@ abstract final class ChartDataTransformer {
       return const [];
     }
 
-    if (definition.creative != null) {
+    if (definition.exploration != null) {
       final ordered = List<Country>.of(countries)
         ..sort((a, b) => a.code.compareTo(b.code));
       return List.unmodifiable([

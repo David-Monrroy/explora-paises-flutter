@@ -12,10 +12,12 @@ class ChartRenderer extends StatelessWidget {
     super.key,
     required this.definition,
     required this.points,
+    this.highlightedCode,
   });
 
   final ChartDefinition definition;
   final List<ChartPoint> points;
+  final String? highlightedCode;
 
   @override
   Widget build(BuildContext context) {
@@ -28,10 +30,12 @@ class ChartRenderer extends StatelessWidget {
       ChartLibrary.flChart => FlChartRenderer(
         definition: definition,
         points: points,
+        highlightedCode: highlightedCode,
       ),
       ChartLibrary.syncfusion => SyncfusionRenderer(
         definition: definition,
         points: points,
+        highlightedCode: highlightedCode,
       ),
       ChartLibrary.maintained => MaintainedRenderer(
         definition: definition,

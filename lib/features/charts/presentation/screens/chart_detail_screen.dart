@@ -23,7 +23,7 @@ class ChartDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final points = ChartDataTransformer.transform(definition, countries);
-    if (definition.creative != null) {
+    if (definition.exploration != null) {
       return CreativeChartDetailScreen(definition: definition, points: points);
     }
     final circular =

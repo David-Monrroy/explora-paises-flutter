@@ -39,92 +39,108 @@ void main() {
     expect(find.text('Colombia'), findsWidgets);
   });
 
-  testWidgets('abre el catálogo y renderiza una gráfica', (tester) async {
-    await tester.pumpWidget(ExploreCountriesApp(repository: _FakeRepository()));
-    await tester.pumpAndSettle();
-
-    await tester.tap(find.text('Gráficas'));
-    await tester.pumpAndSettle();
-
-    expect(find.byKey(const Key('charts-tab')), findsOneWidget);
-    expect(find.text('Elige 7 países'), findsOneWidget);
-    expect(find.byKey(const Key('chart-flChart-creative-1')), findsNothing);
-
-    for (final country in [
-      'Colombia',
-      'Japon',
-      'Canada',
-      'Brasil',
-      'Francia',
-      'Alemania',
-      'India',
-    ]) {
-      await tester.enterText(
-        find.byKey(const Key('country-chart-search')),
-        country,
+  for (final library in ['flChart', 'syncfusion']) {
+    testWidgets('abre el catálogo y renderiza una gráfica de $library', (
+      tester,
+    ) async {
+      final chartKey = Key('chart-$library-creative-1');
+      await tester.pumpWidget(
+        ExploreCountriesApp(repository: _FakeRepository()),
       );
       await tester.pumpAndSettle();
-      await tester.tap(find.text(country).last);
+
+      await tester.tap(find.text('Gráficas'));
       await tester.pumpAndSettle();
-    }
 
-    expect(find.text('Comparación lista'), findsOneWidget);
-    await tester.scrollUntilVisible(
-      find.text('252 gráficas visibles'),
-      180,
-      scrollable: find
-          .descendant(
-            of: find.byKey(const Key('charts-tab')),
-            matching: find.byType(Scrollable),
-          )
-          .first,
-    );
-    expect(find.text('252 gráficas visibles'), findsOneWidget);
+      expect(find.byKey(const Key('charts-tab')), findsOneWidget);
+      expect(find.text('Elige 7 países'), findsOneWidget);
+      expect(find.byKey(chartKey), findsNothing);
 
-    await tester.scrollUntilVisible(
-      find.byKey(const Key('chart-flChart-creative-1')),
-      150,
-      scrollable: find
-          .descendant(
-            of: find.byKey(const Key('charts-tab')),
-            matching: find.byType(Scrollable),
-          )
-          .first,
-    );
-    await Scrollable.ensureVisible(
-      tester.element(find.byKey(const Key('chart-flChart-creative-1'))),
-      alignment: 0.3,
-    );
-    await tester.pumpAndSettle();
-    await tester.tap(find.byKey(const Key('chart-flChart-creative-1')));
-    await tester.pumpAndSettle();
+      for (final country in [
+        'Colombia',
+        'Japon',
+        'Canada',
+        'Brasil',
+        'Francia',
+        'Alemania',
+        'India',
+      ]) {
+        await tester.enterText(
+          find.byKey(const Key('country-chart-search')),
+          country,
+        );
+        await tester.pumpAndSettle();
+        await tester.tap(find.text(country).last);
+        await tester.pumpAndSettle();
+      }
 
-    expect(find.text('Gráfica 1'), findsOneWidget);
-    await tester.scrollUntilVisible(find.text('Leyenda y valores'), 250);
-    expect(find.text('Leyenda y valores'), findsOneWidget);
+      expect(find.text('Comparación lista'), findsOneWidget);
+      await tester.scrollUntilVisible(
+        find.text('252 gráficas visibles'),
+        180,
+        scrollable: find
+            .descendant(
+              of: find.byKey(const Key('charts-tab')),
+              matching: find.byType(Scrollable),
+            )
+            .first,
+      );
+      expect(find.text('252 gráficas visibles'), findsOneWidget);
+      if (library == 'syncfusion') {
+        await tester.ensureVisible(find.text('Syncfusion'));
+        await tester.tap(find.text('Syncfusion'));
+        await tester.pumpAndSettle();
+        expect(find.text('63 gráficas visibles'), findsOneWidget);
+      }
 
-    await tester.pageBack();
-    await tester.pumpAndSettle();
-    await tester.scrollUntilVisible(
-      find.byKey(const Key('selected-COL')),
-      -250,
-      scrollable: find
-          .descendant(
-            of: find.byKey(const Key('charts-tab')),
-            matching: find.byType(Scrollable),
-          )
-          .first,
-    );
-    await Scrollable.ensureVisible(
-      tester.element(find.byKey(const Key('selected-COL'))),
-      alignment: 0.25,
-    );
-    await tester.pumpAndSettle();
-    await tester.tap(find.byTooltip('Quitar Colombia'));
-    await tester.pumpAndSettle();
-    expect(find.text('Elige 7 países'), findsOneWidget);
-    expect(find.byKey(const Key('chart-flChart-creative-1')), findsNothing);
-  });
+      await tester.scrollUntilVisible(
+        find.byKey(chartKey),
+        150,
+        scrollable: find
+            .descendant(
+              of: find.byKey(const Key('charts-tab')),
+              matching: find.byType(Scrollable),
+            )
+            .first,
+      );
+      await Scrollable.ensureVisible(
+        tester.element(find.byKey(chartKey)),
+        alignment: 0.3,
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(chartKey));
+      await tester.pumpAndSettle();
+
+      expect(
+        find.text(library == 'flChart' ? 'Gráfica 1' : 'Gráfica 64'),
+        findsOneWidget,
+      );
+      await tester.scrollUntilVisible(find.text('Leyenda y valores'), 250);
+      expect(find.text('Leyenda y valores'), findsOneWidget);
+
+      await tester.pageBack();
+      await tester.pumpAndSettle();
+      await tester.scrollUntilVisible(
+        find.byKey(const Key('selected-COL')),
+        -250,
+        scrollable: find
+            .descendant(
+              of: find.byKey(const Key('charts-tab')),
+              matching: find.byType(Scrollable),
+            )
+            .first,
+      );
+      await Scrollable.ensureVisible(
+        tester.element(find.byKey(const Key('selected-COL'))),
+        alignment: 0.25,
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.byTooltip('Quitar Colombia'));
+      await tester.pumpAndSettle();
+      expect(find.text('Elige 7 países'), findsOneWidget);
+      expect(find.byKey(chartKey), findsNothing);
+    });
+  }
 }
 
 class _FakeRepository implements CountryRepository {

@@ -1,6 +1,7 @@
 // Visual forms are independent of library names and palette choices.
 // Sorting them gives a signature that also detects reordered duplicates.
 import 'fusion_chart.dart';
+import 'country_chart_spec.dart';
 
 enum CreativeVisual {
   radar,
@@ -20,7 +21,7 @@ enum CreativeVisual {
   rose,
 }
 
-class CreativeChartSpec {
+class CreativeChartSpec implements CountryChartSpec {
   const CreativeChartSpec(
     this.subject,
     this.explanation,
@@ -29,12 +30,17 @@ class CreativeChartSpec {
   });
 
   final String subject;
+  @override
   final String explanation;
   final List<CreativeVisual> visuals;
   final FusionChartSpec? fusion;
 
+  @override
   int get componentCount => fusion?.layers.length ?? visuals.length;
+  @override
+  bool get usesLayerColors => fusion != null;
 
+  @override
   String get title =>
       '${fusion?.names ?? visuals.map((item) => item.label).join(' + ')}: $subject';
   String get signature =>
