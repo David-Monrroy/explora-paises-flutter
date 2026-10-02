@@ -24,6 +24,9 @@ abstract final class ChartDataTransformer {
             countryCode: country.code,
             value: metricValue(country, definition.metric),
             secondaryValue: 0,
+            region: country.region,
+            currencyNames: List.unmodifiable(country.currencies),
+            borderCodes: List.unmodifiable(country.borders),
             metrics: Map.unmodifiable({
               for (final metric in ChartMetric.values)
                 metric: metricValue(country, metric),

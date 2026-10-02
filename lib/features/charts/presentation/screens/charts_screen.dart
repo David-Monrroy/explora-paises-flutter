@@ -183,6 +183,7 @@ class _ChartsScreenState extends State<ChartsScreen> {
             child: SizedBox(
               height: 48,
               child: ListView(
+                key: const Key('chart-library-filters'),
                 padding: const EdgeInsets.symmetric(horizontal: 18),
                 scrollDirection: Axis.horizontal,
                 children: [

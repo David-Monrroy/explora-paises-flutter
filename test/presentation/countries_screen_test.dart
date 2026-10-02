@@ -39,7 +39,7 @@ void main() {
     expect(find.text('Colombia'), findsWidgets);
   });
 
-  for (final library in ['flChart', 'syncfusion']) {
+  for (final library in ['flChart', 'syncfusion', 'maintained']) {
     testWidgets('abre el catálogo y renderiza una gráfica de $library', (
       tester,
     ) async {
@@ -86,9 +86,32 @@ void main() {
             .first,
       );
       expect(find.text('252 gráficas visibles'), findsOneWidget);
-      if (library == 'syncfusion') {
-        await tester.ensureVisible(find.text('Syncfusion'));
-        await tester.tap(find.text('Syncfusion'));
+      if (library != 'flChart') {
+        final label = library == 'syncfusion'
+            ? 'Syncfusion'
+            : 'Maintained Charts';
+        await tester.scrollUntilVisible(
+          find.byKey(const Key('chart-library-filters')),
+          -100,
+          scrollable: find
+              .descendant(
+                of: find.byKey(const Key('charts-tab')),
+                matching: find.byType(Scrollable),
+              )
+              .first,
+        );
+        await tester.scrollUntilVisible(
+          find.text(label),
+          120,
+          scrollable: find
+              .descendant(
+                of: find.byKey(const Key('chart-library-filters')),
+                matching: find.byType(Scrollable),
+              )
+              .first,
+        );
+        await tester.pumpAndSettle();
+        await tester.tap(find.text(label));
         await tester.pumpAndSettle();
         expect(find.text('63 gráficas visibles'), findsOneWidget);
       }
@@ -112,7 +135,11 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(
-        find.text(library == 'flChart' ? 'Gráfica 1' : 'Gráfica 64'),
+        find.text(switch (library) {
+          'flChart' => 'Gráfica 1',
+          'syncfusion' => 'Gráfica 64',
+          _ => 'Gráfica 127',
+        }),
         findsOneWidget,
       );
       await tester.scrollUntilVisible(find.text('Leyenda y valores'), 250);

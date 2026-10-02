@@ -113,8 +113,52 @@ La selección obligatoria de siete países no se modifica. El catálogo está en
 `data/syncfusion_chart_data.dart`, las especificaciones en
 `domain/syncfusion_chart_spec.dart` y el dibujo en
 `presentation/renderers/syncfusion_renderer.dart`. La pantalla de detalle es
-compartida; los datos originales y sus unidades se conservan. Maintained Charts
-y Graphic siguen sin renovar, pendientes de aprobación para sus etapas.
+compartida; los datos originales y sus unidades se conservan.
+
+### Tercera etapa: Maintained Charts completado
+
+63 figuras: 15 individuales, 16 fusiones de dos, 16 de tres y 16 de cuatro
+geometrías; 31 básicas y 32 avanzadas. Incluye treemap, sunburst, Sankey,
+cuerdas, ternario, Marimekko, icicle, empaquetado de círculos, pictograma,
+violín, ridgeline, rug, horizonte, enjambre y red de arcos. Los conjuntos de
+formas se comparan con las 126 figuras anteriores sin considerar librería,
+orden, nombre, métrica o color. Los componentes conocidos solo se reutilizan
+dentro de combinaciones nuevas; cada combinación contiene una geometría nueva.
+
+Los diagramas poco comunes son extensiones del motor de Maintained, no tipos
+incorporados de fábrica: `PointRendererDecorator` dibuja con su `ChartCanvas`
+en **un único `ScatterPlotChart` nativo**. No se colocan dos gráficas lado a
+lado ni se sustituye la librería por un `CustomPainter` independiente. Las
+48 fusiones comparten un eje horizontal 0–100 y siete filas de países.
+Contornos, transparencias, símbolos y pequeños desplazamientos dentro de
+cada fila permiten leer las capas; estos desplazamientos no son datos.
+
+Las redes usan monedas compartidas y fronteras registradas entre los siete;
+sin coincidencias se muestran nodos sin inventar conexiones. El Sankey agrupa
+habitantes por región, no migraciones. Treemap y círculos conservan áreas
+proporcionales a km², y los círculos no se solapan. Sunburst e icicle conservan
+los totales en ambos niveles de región y país. El ternario reparte la suma de
+tres índices, no unidades físicas incompatibles. Marimekko usa cuota de
+habitantes como ancho e idiomas relativos como altura; su área no representa
+una nueva cantidad. Horizonte pliega densidad en tres bandas; no es historia.
+
+Violín y ridgeline describen solo los siete índices de características por
+país mediante una estimación gaussiana de ancho fijo 12, reflejada en los
+límites 0 y 100. No son distribuciones de habitantes, inferencia estadística
+ni intervalos de confianza. Rug conserva siete marcas incluso con empates;
+las cajas usan cuartiles inclusivos y bigotes mínimo/máximo. El enjambre
+mantiene densidades reales y separa los puntos verticalmente para evitar
+colisiones, sin añadir observaciones. Los ceros y perfiles sin composición
+se explican, y todos los países siguen disponibles en la leyenda y datos.
+
+Catálogo: `data/maintained_creative_catalog.dart`; cálculos y relaciones:
+`data/maintained_chart_data.dart`; especificaciones:
+`domain/maintained_chart_spec.dart`; renderizador y extensión nativa:
+`presentation/renderers/maintained_renderer.dart` y
+`presentation/renderers/maintained_scene_decorator.dart`. El detalle conserva
+títulos, unidades, explicaciones y valores originales, y permite consultar
+regiones, monedas y fronteras. Resaltar nunca reduce la selección de siete.
+Graphic sigue sin renovar, pendiente de aprobación para la última etapa.
 
 `charts_flutter_maintained` se conserva en `third_party/` con tres ajustes
 mínimos de compatibilidad para Dart 3.13. El código sigue perteneciendo a sus

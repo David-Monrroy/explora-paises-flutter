@@ -1,72 +1,11 @@
 import '../domain/chart_definition.dart';
 import 'fl_creative_catalog.dart';
 import 'syncfusion_creative_catalog.dart';
+import 'maintained_creative_catalog.dart';
 
 abstract final class ChartCatalog {
   // Cada receta cambia la pregunta, la geometría o el cálculo mostrado.
   static const recipes = <ChartRecipe>[
-    // Maintained Charts.
-    ChartRecipe(
-      kind: ChartKind.bar,
-      analysis: ChartAnalysis.distanceToAverage,
-      question: 'distancia absoluta al promedio',
-      explanation: 'Indica cuánto se aleja cada país de la media, por arriba o por abajo.',
-    ),
-    ChartRecipe(
-      kind: ChartKind.line,
-      analysis: ChartAnalysis.rank,
-      question: 'posición en el ranking',
-      explanation: 'Da posición 1 al país mayor y 7 al menor.',
-    ),
-    ChartRecipe(
-      kind: ChartKind.area,
-      analysis: ChartAnalysis.runningAverage,
-      question: 'promedio acumulado del ranking',
-      explanation:
-          'Calcula el promedio de los países agregados hasta cada posición.',
-    ),
-    ChartRecipe(
-      kind: ChartKind.pie,
-      analysis: ChartAnalysis.topGroup,
-      groupSize: 3,
-      question: 'tres líderes frente al resto',
-      explanation: 'Compara la suma de los tres países mayores con los cuatro restantes.',
-    ),
-    ChartRecipe(
-      kind: ChartKind.donut,
-      analysis: ChartAnalysis.regionGroup,
-      question: 'aporte de cada región',
-      explanation: 'Agrupa los siete países por región y suma sus valores. Cada país participa una sola vez.',
-    ),
-    ChartRecipe(
-      kind: ChartKind.scatter,
-      analysis: ChartAnalysis.scatter,
-      secondaryOffset: 5,
-      question: 'relación con una quinta variable',
-      explanation: 'Cada punto compara dos valores distintos de uno de los siete países.',
-    ),
-    ChartRecipe(
-      kind: ChartKind.bar,
-      analysis: ChartAnalysis.gapToMinimum,
-      question: 'ventaja respecto al menor',
-      explanation: 'Muestra cuánto supera cada país al valor más pequeño.',
-    ),
-    ChartRecipe(
-      kind: ChartKind.line,
-      analysis: ChartAnalysis.percentOfMaximum,
-      question: 'perfil relativo al valor más alto',
-      explanation:
-          'El líder vale 100 % y la línea revela cómo disminuye el resto.',
-    ),
-    ChartRecipe(
-      kind: ChartKind.scatter,
-      analysis: ChartAnalysis.scatter,
-      secondaryOffset: 6,
-      question: 'relación con una sexta variable',
-      explanation:
-          'Cruza dos características diferentes para los siete países.',
-    ),
-
     // Graphic.
     ChartRecipe(
       kind: ChartKind.bar,
@@ -135,12 +74,13 @@ abstract final class ChartCatalog {
   static final List<ChartDefinition> all = _buildCatalog();
 
   static List<ChartDefinition> _buildCatalog() {
-    assert(recipes.length == 18);
+    assert(recipes.length == 9);
     final charts = <ChartDefinition>[
       ...FlCreativeCatalog.all,
       ...SyncfusionCreativeCatalog.all,
+      ...MaintainedCreativeCatalog.all,
     ];
-    for (final library in ChartLibrary.values.skip(2)) {
+    for (final library in ChartLibrary.values.skip(3)) {
       for (final metric in ChartMetric.values) {
         for (var recipeIndex = 0; recipeIndex < 9; recipeIndex++) {
           final local = metric.index * 9 + recipeIndex;
@@ -154,7 +94,7 @@ abstract final class ChartCatalog {
                   ? ChartLevel.basic
                   : ChartLevel.advanced,
               metric: metric,
-              recipe: recipes[(library.index - 2) * 9 + recipeIndex],
+              recipe: recipes[(library.index - 3) * 9 + recipeIndex],
             ),
           );
         }

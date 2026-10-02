@@ -2,6 +2,7 @@ import 'creative_chart.dart';
 import 'chart_metric.dart';
 import 'country_chart_spec.dart';
 import 'syncfusion_chart_spec.dart';
+import 'maintained_chart_spec.dart';
 
 export 'chart_metric.dart';
 
@@ -72,6 +73,7 @@ class ChartDefinition {
     required this.recipe,
     this.creative,
     this.syncfusionCreative,
+    this.maintainedCreative,
   });
 
   final String id;
@@ -82,7 +84,9 @@ class ChartDefinition {
   final ChartRecipe recipe;
   final CreativeChartSpec? creative;
   final SyncfusionChartSpec? syncfusionCreative;
-  CountryChartSpec? get exploration => creative ?? syncfusionCreative;
+  final MaintainedChartSpec? maintainedCreative;
+  CountryChartSpec? get exploration =>
+      creative ?? syncfusionCreative ?? maintainedCreative;
 
   ChartKind get kind => recipe.kind;
   ChartAnalysis get analysis => recipe.analysis;
@@ -96,7 +100,7 @@ class ChartDefinition {
   String get description => exploration?.explanation ?? recipe.explanation;
   String get semanticKey => exploration == null
       ? '${metric.name}|${recipe.key}'
-      : 'creative|${creative?.signature ?? syncfusionCreative!.signature}';
+      : 'creative|${creative?.signature ?? syncfusionCreative?.signature ?? maintainedCreative!.signature}';
 
   ChartMetric? get secondaryMetric => recipe.secondaryOffset == 0
       ? null

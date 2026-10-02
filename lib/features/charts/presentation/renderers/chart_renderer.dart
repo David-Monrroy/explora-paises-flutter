@@ -40,6 +40,7 @@ class ChartRenderer extends StatelessWidget {
       ChartLibrary.maintained => MaintainedRenderer(
         definition: definition,
         points: points,
+        highlightedCode: highlightedCode,
       ),
       ChartLibrary.graphic => GraphicRenderer(
         definition: definition,

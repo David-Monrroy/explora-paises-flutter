@@ -128,6 +128,20 @@ class _CreativeChartDetailScreenState extends State<CreativeChartDetailScreen> {
                       subtitle: Text(widget.points[i].axisLabel),
                       childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 14),
                       children: [
+                        if (widget.definition.maintainedCreative != null) ...[
+                          Text(
+                            'Región: ${widget.points[i].region.isEmpty ? 'Sin región' : widget.points[i].region}',
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            'Monedas registradas: ${widget.points[i].currencyNames.isEmpty ? 'sin registros' : widget.points[i].currencyNames.join(', ')}',
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            'Fronteras registradas (códigos): ${widget.points[i].borderCodes.isEmpty ? 'sin registros' : widget.points[i].borderCodes.join(', ')}',
+                          ),
+                          const SizedBox(height: 10),
+                        ],
                         for (final metric in ChartMetric.values)
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: 4),
