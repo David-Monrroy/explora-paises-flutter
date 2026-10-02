@@ -1,3 +1,5 @@
+import 'chart_metric.dart';
+
 class ChartPoint {
   const ChartPoint({
     required this.label,
@@ -6,6 +8,7 @@ class ChartPoint {
     this.countryCode,
     this.members = const [],
     this.originalValue,
+    this.metrics = const {},
   });
 
   final String label;
@@ -14,6 +17,7 @@ class ChartPoint {
   final String? countryCode;
   final List<String> members;
   final double? originalValue;
+  final Map<ChartMetric, double> metrics;
 
   String get axisLabel => countryCode ?? label;
 }

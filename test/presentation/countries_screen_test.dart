@@ -48,7 +48,7 @@ void main() {
 
     expect(find.byKey(const Key('charts-tab')), findsOneWidget);
     expect(find.text('Elige 7 países'), findsOneWidget);
-    expect(find.byKey(const Key('chart-flChart-population-1')), findsNothing);
+    expect(find.byKey(const Key('chart-flChart-creative-1')), findsNothing);
 
     for (final country in [
       'Colombia',
@@ -82,7 +82,7 @@ void main() {
     expect(find.text('252 gráficas visibles'), findsOneWidget);
 
     await tester.scrollUntilVisible(
-      find.byKey(const Key('chart-flChart-population-1')),
+      find.byKey(const Key('chart-flChart-creative-1')),
       150,
       scrollable: find
           .descendant(
@@ -92,11 +92,11 @@ void main() {
           .first,
     );
     await Scrollable.ensureVisible(
-      tester.element(find.byKey(const Key('chart-flChart-population-1'))),
+      tester.element(find.byKey(const Key('chart-flChart-creative-1'))),
       alignment: 0.3,
     );
     await tester.pumpAndSettle();
-    await tester.tap(find.byKey(const Key('chart-flChart-population-1')));
+    await tester.tap(find.byKey(const Key('chart-flChart-creative-1')));
     await tester.pumpAndSettle();
 
     expect(find.text('Gráfica 1'), findsOneWidget);
@@ -123,7 +123,7 @@ void main() {
     await tester.tap(find.byTooltip('Quitar Colombia'));
     await tester.pumpAndSettle();
     expect(find.text('Elige 7 países'), findsOneWidget);
-    expect(find.byKey(const Key('chart-flChart-population-1')), findsNothing);
+    expect(find.byKey(const Key('chart-flChart-creative-1')), findsNothing);
   });
 }
 

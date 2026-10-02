@@ -14,6 +14,24 @@ abstract final class ChartDataTransformer {
       return const [];
     }
 
+    if (definition.creative != null) {
+      final ordered = List<Country>.of(countries)
+        ..sort((a, b) => a.code.compareTo(b.code));
+      return List.unmodifiable([
+        for (final country in ordered)
+          ChartPoint(
+            label: country.name,
+            countryCode: country.code,
+            value: metricValue(country, definition.metric),
+            secondaryValue: 0,
+            metrics: Map.unmodifiable({
+              for (final metric in ChartMetric.values)
+                metric: metricValue(country, metric),
+            }),
+          ),
+      ]);
+    }
+
     final sorted = List<Country>.of(countries)
       ..sort((a, b) {
         final comparison = metricValue(

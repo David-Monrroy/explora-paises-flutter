@@ -8,6 +8,7 @@ import '../../domain/chart_definition.dart';
 import '../../domain/chart_point.dart';
 import '../chart_palette.dart';
 import '../renderers/chart_renderer.dart';
+import 'creative_chart_detail_screen.dart';
 
 class ChartDetailScreen extends StatelessWidget {
   const ChartDetailScreen({
@@ -22,6 +23,9 @@ class ChartDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final points = ChartDataTransformer.transform(definition, countries);
+    if (definition.creative != null) {
+      return CreativeChartDetailScreen(definition: definition, points: points);
+    }
     final circular =
         definition.kind == ChartKind.pie || definition.kind == ChartKind.donut;
     final total = points.fold<double>(0, (sum, point) => sum + point.value);

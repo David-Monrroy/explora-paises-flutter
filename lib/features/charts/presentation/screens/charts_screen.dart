@@ -276,6 +276,7 @@ class _ChartsScreenState extends State<ChartsScreen> {
     ChartKind.pie => Icons.pie_chart_rounded,
     ChartKind.donut => Icons.donut_large_rounded,
     ChartKind.scatter => Icons.scatter_plot_rounded,
+    ChartKind.creative => Icons.auto_graph_rounded,
   };
 }
 

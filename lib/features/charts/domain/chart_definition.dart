@@ -1,18 +1,13 @@
+import 'creative_chart.dart';
+import 'chart_metric.dart';
+
+export 'chart_metric.dart';
+
 enum ChartLibrary { flChart, syncfusion, maintained, graphic }
 
 enum ChartLevel { basic, advanced }
 
-enum ChartKind { bar, line, area, pie, donut, scatter }
-
-enum ChartMetric {
-  population,
-  area,
-  density,
-  languages,
-  borders,
-  timezones,
-  currencies,
-}
+enum ChartKind { bar, line, area, pie, donut, scatter, creative }
 
 enum ChartAnalysis {
   raw,
@@ -73,6 +68,7 @@ class ChartDefinition {
     required this.level,
     required this.metric,
     required this.recipe,
+    this.creative,
   });
 
   final String id;
@@ -81,16 +77,21 @@ class ChartDefinition {
   final ChartLevel level;
   final ChartMetric metric;
   final ChartRecipe recipe;
+  final CreativeChartSpec? creative;
 
   ChartKind get kind => recipe.kind;
   ChartAnalysis get analysis => recipe.analysis;
-  String get title => kind == ChartKind.scatter
-      ? analysis == ChartAnalysis.scatterRank
-            ? '${metric.label} frente al puesto en ${secondaryMetric!.label}'
-            : '${metric.label} frente a ${secondaryMetric!.label}'
-      : '${metric.label}: ${recipe.question}';
-  String get description => recipe.explanation;
-  String get semanticKey => '${metric.name}|${recipe.key}';
+  String get title =>
+      creative?.title ??
+      (kind == ChartKind.scatter
+          ? analysis == ChartAnalysis.scatterRank
+                ? '${metric.label} frente al puesto en ${secondaryMetric!.label}'
+                : '${metric.label} frente a ${secondaryMetric!.label}'
+          : '${metric.label}: ${recipe.question}');
+  String get description => creative?.explanation ?? recipe.explanation;
+  String get semanticKey => creative == null
+      ? '${metric.name}|${recipe.key}'
+      : 'creative|${creative!.signature}';
 
   ChartMetric? get secondaryMetric => recipe.secondaryOffset == 0
       ? null
@@ -124,39 +125,6 @@ class ChartDefinition {
       : '${metric.label} ($valueUnit)';
 }
 
-extension ChartMetricLabels on ChartMetric {
-  String get meaning => switch (this) {
-    ChartMetric.population => 'Número de habitantes registrado por la API.',
-    ChartMetric.area => 'Superficie terrestre en kilómetros cuadrados.',
-    ChartMetric.density => 'Habitantes divididos entre kilómetros cuadrados.',
-    ChartMetric.languages => 'Número de idiomas registrados para el país.',
-    ChartMetric.borders => 'Número de países vecinos con frontera terrestre, aunque no estén entre los siete elegidos.',
-    ChartMetric.timezones =>
-      'Número de zonas horarias registradas para el país.',
-    ChartMetric.currencies => 'Número de monedas registradas para el país.',
-  };
-
-  String get label => switch (this) {
-    ChartMetric.population => 'Población',
-    ChartMetric.area => 'Superficie',
-    ChartMetric.density => 'Densidad poblacional',
-    ChartMetric.languages => 'Idiomas registrados',
-    ChartMetric.borders => 'Países limítrofes',
-    ChartMetric.timezones => 'Zonas horarias',
-    ChartMetric.currencies => 'Monedas registradas',
-  };
-
-  String get unit => switch (this) {
-    ChartMetric.population => 'habitantes',
-    ChartMetric.area => 'km²',
-    ChartMetric.density => 'hab./km²',
-    ChartMetric.languages => 'idiomas',
-    ChartMetric.borders => 'fronteras',
-    ChartMetric.timezones => 'zonas horarias',
-    ChartMetric.currencies => 'monedas',
-  };
-}
-
 extension ChartLibraryLabels on ChartLibrary {
   String get label => switch (this) {
     ChartLibrary.flChart => 'FL Chart',
@@ -178,5 +146,6 @@ extension ChartKindLabels on ChartKind {
     ChartKind.pie => 'Pastel',
     ChartKind.donut => 'Dona',
     ChartKind.scatter => 'Dispersión',
+    ChartKind.creative => 'Exploración visual',
   };
 }
