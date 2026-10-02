@@ -39,7 +39,7 @@ void main() {
     expect(find.text('Colombia'), findsWidgets);
   });
 
-  for (final library in ['flChart', 'syncfusion', 'maintained']) {
+  for (final library in ['flChart', 'syncfusion', 'maintained', 'graphic']) {
     testWidgets('abre el catálogo y renderiza una gráfica de $library', (
       tester,
     ) async {
@@ -87,9 +87,11 @@ void main() {
       );
       expect(find.text('252 gráficas visibles'), findsOneWidget);
       if (library != 'flChart') {
-        final label = library == 'syncfusion'
-            ? 'Syncfusion'
-            : 'Maintained Charts';
+        final label = switch (library) {
+          'syncfusion' => 'Syncfusion',
+          'maintained' => 'Maintained Charts',
+          _ => 'Graphic',
+        };
         await tester.scrollUntilVisible(
           find.byKey(const Key('chart-library-filters')),
           -100,
@@ -138,7 +140,8 @@ void main() {
         find.text(switch (library) {
           'flChart' => 'Gráfica 1',
           'syncfusion' => 'Gráfica 64',
-          _ => 'Gráfica 127',
+          'maintained' => 'Gráfica 127',
+          _ => 'Gráfica 190',
         }),
         findsOneWidget,
       );

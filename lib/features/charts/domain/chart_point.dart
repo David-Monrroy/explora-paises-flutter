@@ -12,6 +12,7 @@ class ChartPoint {
     this.region = '',
     this.currencyNames = const [],
     this.borderCodes = const [],
+    this.languageNames = const [],
   });
 
   final String label;
@@ -24,6 +25,7 @@ class ChartPoint {
   final String region;
   final List<String> currencyNames;
   final List<String> borderCodes;
+  final List<String> languageNames;
 
   String get axisLabel => countryCode ?? label;
 }

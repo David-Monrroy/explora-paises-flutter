@@ -1,0 +1,232 @@
+import '../domain/chart_definition.dart';
+import '../domain/graphic_chart_spec.dart';
+
+/// Unique whole figures; never vary just color, name, metric or component order.
+abstract final class GraphicCreativeCatalog {
+  static const specs = <GraphicChartSpec>[
+    GraphicChartSpec([GraphicVisual.voronoi]),
+    GraphicChartSpec([GraphicVisual.dendrogram]),
+    GraphicChartSpec([GraphicVisual.minimumSpanningTree]),
+    GraphicChartSpec([GraphicVisual.upset]),
+    GraphicChartSpec([GraphicVisual.venn]),
+    GraphicChartSpec([GraphicVisual.chernoff]),
+    GraphicChartSpec([GraphicVisual.andrews]),
+    GraphicChartSpec([GraphicVisual.petals]),
+    GraphicChartSpec([GraphicVisual.convexHull]),
+    GraphicChartSpec([GraphicVisual.hexbin]),
+    GraphicChartSpec([GraphicVisual.taylor]),
+    GraphicChartSpec([GraphicVisual.diamond]),
+    GraphicChartSpec([GraphicVisual.triangleFan]),
+    GraphicChartSpec([GraphicVisual.vector]),
+    GraphicChartSpec([GraphicVisual.boxen]),
+    GraphicChartSpec([GraphicVisual.diamond, GraphicVisual.dots]),
+    GraphicChartSpec([GraphicVisual.diamond, GraphicVisual.boxPlot]),
+    GraphicChartSpec([GraphicVisual.diamond, GraphicVisual.lollipop]),
+    GraphicChartSpec([GraphicVisual.diamond, GraphicVisual.dumbbell]),
+    GraphicChartSpec([GraphicVisual.diamond, GraphicVisual.bullet]),
+    GraphicChartSpec([GraphicVisual.triangleFan, GraphicVisual.dots]),
+    GraphicChartSpec([GraphicVisual.triangleFan, GraphicVisual.boxPlot]),
+    GraphicChartSpec([GraphicVisual.triangleFan, GraphicVisual.lollipop]),
+    GraphicChartSpec([GraphicVisual.triangleFan, GraphicVisual.dumbbell]),
+    GraphicChartSpec([GraphicVisual.triangleFan, GraphicVisual.bullet]),
+    GraphicChartSpec([GraphicVisual.vector, GraphicVisual.dots]),
+    GraphicChartSpec([GraphicVisual.vector, GraphicVisual.boxPlot]),
+    GraphicChartSpec([GraphicVisual.vector, GraphicVisual.lollipop]),
+    GraphicChartSpec([GraphicVisual.vector, GraphicVisual.dumbbell]),
+    GraphicChartSpec([GraphicVisual.vector, GraphicVisual.bullet]),
+    GraphicChartSpec([GraphicVisual.diamond, GraphicVisual.triangleFan]),
+    GraphicChartSpec([
+      GraphicVisual.diamond,
+      GraphicVisual.triangleFan,
+      GraphicVisual.dots,
+    ]),
+    GraphicChartSpec([
+      GraphicVisual.diamond,
+      GraphicVisual.triangleFan,
+      GraphicVisual.boxPlot,
+    ]),
+    GraphicChartSpec([
+      GraphicVisual.diamond,
+      GraphicVisual.triangleFan,
+      GraphicVisual.lollipop,
+    ]),
+    GraphicChartSpec([
+      GraphicVisual.diamond,
+      GraphicVisual.triangleFan,
+      GraphicVisual.dumbbell,
+    ]),
+    GraphicChartSpec([
+      GraphicVisual.diamond,
+      GraphicVisual.triangleFan,
+      GraphicVisual.bullet,
+    ]),
+    GraphicChartSpec([
+      GraphicVisual.diamond,
+      GraphicVisual.dots,
+      GraphicVisual.boxPlot,
+    ]),
+    GraphicChartSpec([
+      GraphicVisual.diamond,
+      GraphicVisual.lollipop,
+      GraphicVisual.bullet,
+    ]),
+    GraphicChartSpec([
+      GraphicVisual.diamond,
+      GraphicVisual.dumbbell,
+      GraphicVisual.bullet,
+    ]),
+    GraphicChartSpec([
+      GraphicVisual.triangleFan,
+      GraphicVisual.vector,
+      GraphicVisual.dots,
+    ]),
+    GraphicChartSpec([
+      GraphicVisual.triangleFan,
+      GraphicVisual.vector,
+      GraphicVisual.boxPlot,
+    ]),
+    GraphicChartSpec([
+      GraphicVisual.triangleFan,
+      GraphicVisual.vector,
+      GraphicVisual.lollipop,
+    ]),
+    GraphicChartSpec([
+      GraphicVisual.triangleFan,
+      GraphicVisual.vector,
+      GraphicVisual.dumbbell,
+    ]),
+    GraphicChartSpec([
+      GraphicVisual.triangleFan,
+      GraphicVisual.vector,
+      GraphicVisual.bullet,
+    ]),
+    GraphicChartSpec([
+      GraphicVisual.vector,
+      GraphicVisual.dots,
+      GraphicVisual.boxPlot,
+    ]),
+    GraphicChartSpec([
+      GraphicVisual.vector,
+      GraphicVisual.dots,
+      GraphicVisual.lollipop,
+    ]),
+    GraphicChartSpec([
+      GraphicVisual.vector,
+      GraphicVisual.boxPlot,
+      GraphicVisual.bullet,
+    ]),
+    GraphicChartSpec([
+      GraphicVisual.diamond,
+      GraphicVisual.triangleFan,
+      GraphicVisual.dots,
+      GraphicVisual.boxPlot,
+    ]),
+    GraphicChartSpec([
+      GraphicVisual.diamond,
+      GraphicVisual.triangleFan,
+      GraphicVisual.dots,
+      GraphicVisual.lollipop,
+    ]),
+    GraphicChartSpec([
+      GraphicVisual.diamond,
+      GraphicVisual.triangleFan,
+      GraphicVisual.dots,
+      GraphicVisual.dumbbell,
+    ]),
+    GraphicChartSpec([
+      GraphicVisual.diamond,
+      GraphicVisual.triangleFan,
+      GraphicVisual.dots,
+      GraphicVisual.bullet,
+    ]),
+    GraphicChartSpec([
+      GraphicVisual.diamond,
+      GraphicVisual.triangleFan,
+      GraphicVisual.boxPlot,
+      GraphicVisual.lollipop,
+    ]),
+    GraphicChartSpec([
+      GraphicVisual.diamond,
+      GraphicVisual.triangleFan,
+      GraphicVisual.boxPlot,
+      GraphicVisual.dumbbell,
+    ]),
+    GraphicChartSpec([
+      GraphicVisual.diamond,
+      GraphicVisual.triangleFan,
+      GraphicVisual.boxPlot,
+      GraphicVisual.bullet,
+    ]),
+    GraphicChartSpec([
+      GraphicVisual.diamond,
+      GraphicVisual.triangleFan,
+      GraphicVisual.lollipop,
+      GraphicVisual.bullet,
+    ]),
+    GraphicChartSpec([
+      GraphicVisual.triangleFan,
+      GraphicVisual.vector,
+      GraphicVisual.dots,
+      GraphicVisual.boxPlot,
+    ]),
+    GraphicChartSpec([
+      GraphicVisual.triangleFan,
+      GraphicVisual.vector,
+      GraphicVisual.dots,
+      GraphicVisual.lollipop,
+    ]),
+    GraphicChartSpec([
+      GraphicVisual.triangleFan,
+      GraphicVisual.vector,
+      GraphicVisual.dots,
+      GraphicVisual.dumbbell,
+    ]),
+    GraphicChartSpec([
+      GraphicVisual.triangleFan,
+      GraphicVisual.vector,
+      GraphicVisual.dots,
+      GraphicVisual.bullet,
+    ]),
+    GraphicChartSpec([
+      GraphicVisual.triangleFan,
+      GraphicVisual.vector,
+      GraphicVisual.boxPlot,
+      GraphicVisual.lollipop,
+    ]),
+    GraphicChartSpec([
+      GraphicVisual.triangleFan,
+      GraphicVisual.vector,
+      GraphicVisual.boxPlot,
+      GraphicVisual.dumbbell,
+    ]),
+    GraphicChartSpec([
+      GraphicVisual.triangleFan,
+      GraphicVisual.vector,
+      GraphicVisual.boxPlot,
+      GraphicVisual.bullet,
+    ]),
+    GraphicChartSpec([
+      GraphicVisual.diamond,
+      GraphicVisual.vector,
+      GraphicVisual.dumbbell,
+      GraphicVisual.bullet,
+    ]),
+  ];
+  static final List<ChartDefinition> all = List.unmodifiable([
+    for (var index = 0; index < specs.length; index++)
+      ChartDefinition(
+        id: 'graphic-creative-${index + 1}',
+        number: 190 + index,
+        library: ChartLibrary.graphic,
+        level: index < 31 ? ChartLevel.basic : ChartLevel.advanced,
+        metric: ChartMetric.population,
+        recipe: const ChartRecipe(
+          kind: ChartKind.creative,
+          analysis: ChartAnalysis.raw,
+          question: 'Diagramas de siete países',
+          explanation: 'Geometrías de datos reales en una sola figura.',
+        ),
+        graphicCreative: specs[index],
+      ),
+  ]);
+}

@@ -27,6 +27,7 @@ abstract final class ChartDataTransformer {
             region: country.region,
             currencyNames: List.unmodifiable(country.currencies),
             borderCodes: List.unmodifiable(country.borders),
+            languageNames: List.unmodifiable(country.languages),
             metrics: Map.unmodifiable({
               for (final metric in ChartMetric.values)
                 metric: metricValue(country, metric),

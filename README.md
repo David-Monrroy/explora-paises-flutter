@@ -37,8 +37,9 @@ visualizaciones construidas exclusivamente con esos siete países:
 - 63 con `charts_flutter_maintained`.
 - 63 con `graphic`.
 
-Cada librería contiene 31 gráficas básicas y 32 avanzadas. Las 252 combinaciones
-de métrica, cálculo y geometría son únicas. Los detalles incluyen título,
+Cada librería contiene 31 gráficas básicas y 32 avanzadas. Las 252 figuras
+tienen conjuntos de formas distintos, sin contar colores, orden, nombres o
+métricas como diferencias. Los detalles incluyen título,
 explicación, ejes, unidades, leyenda y los valores de cada país o grupo.
 
 Las métricas son población, superficie, densidad, idiomas, países limítrofes,
@@ -55,8 +56,8 @@ La primera librería contiene 15 visualizaciones individuales, 16 combinaciones
 de dos, 16 de tres y 16 de cuatro. Las primeras 31 se clasifican como básicas y
 las 32 combinaciones de tres o cuatro como avanzadas. El conjunto de componentes
 de cada combinación es único, incluso si se ignora su orden, nombre y color.
-Las otras librerías se renuevan por separado, con verificación de geometrías
-distintas antes de avanzar a la siguiente.
+Las cuatro etapas están completadas, con verificación de conjuntos de geometrías
+distintos entre librerías.
 
 Las formas incluyen radar, paletas, mancuernas, pendientes, coordenadas paralelas,
 burbujas, mapa de calor, waffle, curva de concentración, cascada, bala, barras
@@ -158,16 +159,62 @@ Catálogo: `data/maintained_creative_catalog.dart`; cálculos y relaciones:
 `presentation/renderers/maintained_scene_decorator.dart`. El detalle conserva
 títulos, unidades, explicaciones y valores originales, y permite consultar
 regiones, monedas y fronteras. Resaltar nunca reduce la selección de siete.
-Graphic sigue sin renovar, pendiente de aprobación para la última etapa.
 
 `charts_flutter_maintained` se conserva en `third_party/` con tres ajustes
 mínimos de compatibilidad para Dart 3.13. El código sigue perteneciendo a sus
 autores originales y mantiene sus archivos de licencia.
 
+### Cuarta etapa: Graphic completado
+
+63 figuras: 15 individuales, 16 fusiones de dos, 16 de tres y 16 de cuatro
+componentes; 31 básicas y 32 avanzadas. Incluye Voronoi, dendrograma, árbol de
+expansión mínima, UpSet, Venn, caras de Chernoff, curvas de Andrews, pétalos,
+envolventes convexas, hexbin, Taylor, diamantes intercuartílicos, abanicos
+triangulares, flechas de contraste y boxen. Las 252 figuras se comparan por
+sus conjuntos de formas, ignorando biblioteca, orden, nombre, color y métrica.
+Los componentes conocidos solo aparecen en combinaciones nuevas, nunca como
+gráficas individuales repetidas.
+
+Son extensiones públicas de Graphic, no tipos incorporados de fábrica:
+`CustomMark` y `Shape` generan sus `MarkElement` nativos dentro de **un único
+`Chart`**. Cada combinación añade dos, tres o cuatro marcas al mismo lienzo,
+con siete filas y un eje relativo 0–100 compartido. Cada capa conserva su nombre,
+color y explicación. Las etiquetas cercanas se separan con llamadas; los puntos
+no se desplazan y los siete países siguen en los cálculos al resaltar uno.
+
+Voronoi, envolventes y hexbin usan índices de superficie y población: no son
+mapas ni áreas territoriales. Las coordenadas idénticas comparten celda. Las
+envolventes agrupan por región y el hexbin cuenta países, no habitantes.
+El dendrograma usa enlace promedio sobre la distancia cuadrática media de los
+siete índices; el árbol conecta los siete perfiles con seis enlaces mínimos,
+sin inventar fronteras. UpSet cuenta idiomas con membresía exacta y Venn cuenta
+países para hasta tres idiomas; sus círculos son esquemáticos y la lista detalla
+todos los miembros. Se conservan los nombres originales de idiomas de la API.
+
+Chernoff y pétalos codifican los siete índices y explican cada rasgo; las caras
+no valoran felicidad y los pétalos tienen longitudes, no áreas, proporcionales.
+Andrews transforma esos índices en funciones matemáticas, no series temporales.
+Taylor compara cada perfil con el perfil medio mediante correlación y desviación
+estándar muestral; su discrepancia centrada usa divisor 6, no representa error
+total ni calidad. Una correlación indefinida no se dibuja y se explica.
+Diamantes, abanicos y boxen resumen cuantiles de siete características, sin
+afirmar distribuciones poblacionales ni intervalos de confianza. Las flechas
+comparan población y superficie relativas, no movimientos históricos.
+
+Catálogo: `data/graphic_creative_catalog.dart`; cálculos:
+`data/graphic_chart_data.dart`; especificaciones: `domain/graphic_chart_spec.dart`;
+presentación y extensión nativa: `presentation/renderers/graphic_renderer.dart`
+y `presentation/renderers/graphic_scene_shape.dart`. La selección obligatoria
+de siete países y los valores originales con sus unidades permanecen intactos.
+
 ## Verificación
 
 ```powershell
 flutter analyze
-flutter test
-flutter build web
+flutter test --concurrency=1
+flutter build web --release --no-wasm-dry-run
 ```
+
+Las pruebas comprueban conteos, unicidad entre las cuatro bibliotecas, cálculos,
+selección de siete países, datos originales, figuras compartidas y renderizado
+móvil, incluidos perfiles con valores cero o empatados.

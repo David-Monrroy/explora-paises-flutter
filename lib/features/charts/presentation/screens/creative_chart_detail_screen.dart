@@ -128,7 +128,8 @@ class _CreativeChartDetailScreenState extends State<CreativeChartDetailScreen> {
                       subtitle: Text(widget.points[i].axisLabel),
                       childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 14),
                       children: [
-                        if (widget.definition.maintainedCreative != null) ...[
+                        if (widget.definition.maintainedCreative != null ||
+                            widget.definition.graphicCreative != null) ...[
                           Text(
                             'Región: ${widget.points[i].region.isEmpty ? 'Sin región' : widget.points[i].region}',
                           ),
@@ -139,6 +140,12 @@ class _CreativeChartDetailScreenState extends State<CreativeChartDetailScreen> {
                           const SizedBox(height: 6),
                           Text(
                             'Fronteras registradas (códigos): ${widget.points[i].borderCodes.isEmpty ? 'sin registros' : widget.points[i].borderCodes.join(', ')}',
+                          ),
+                          const SizedBox(height: 10),
+                        ],
+                        if (widget.definition.graphicCreative != null) ...[
+                          Text(
+                            'Idiomas registrados: ${widget.points[i].languageNames.isEmpty ? 'sin registros' : widget.points[i].languageNames.join(', ')}',
                           ),
                           const SizedBox(height: 10),
                         ],

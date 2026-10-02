@@ -45,6 +45,7 @@ class ChartRenderer extends StatelessWidget {
       ChartLibrary.graphic => GraphicRenderer(
         definition: definition,
         points: points,
+        highlightedCode: highlightedCode,
       ),
     };
   }
